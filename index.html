@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedyWheels - Car Rental Service</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 2rem 0;
+            background-color: var(--light-color);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #c0392b;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: calc(100% - 60px);
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        /* Car Grid */
+        .cars-section {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-image {
+            height: 180px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .car-image i {
+            font-size: 5rem;
+            color: var(--accent-color);
+        }
+
+        .car-image img,
+        .car-detail-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        }
+
+
+        .car-details {
+            padding: 15px;
+        }
+
+        .car-title {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .car-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .car-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .car-availability {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .available {
+            color: var(--success-color);
+        }
+
+        .unavailable {
+            color: var(--warning-color);
+        }
+
+        .car-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .car-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .car-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Reservation Section */
+        .reservation-section {
+            padding: 2rem 0;
+            display: none;
+        }
+
+        .car-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .car-detail-header {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .car-detail-image {
+            width: 250px;
+            height: 180px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .car-detail-image i {
+            font-size: 6rem;
+            color: var(--accent-color);
+        }
+
+        .car-detail-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .car-detail-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .car-detail-meta {
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .car-detail-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .car-detail-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-top: 10px;
+        }
+
+        .car-unavailable-message {
+            background-color: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning-color);
+            display: none;
+        }
+
+        .reservation-form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-input.error {
+            border-color: var(--secondary-color);
+        }
+
+        .error-message {
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .price-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .form-btn {
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-cancel {
+            background-color: #eee;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background-color: #ddd;
+        }
+
+        .btn-submit {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-submit:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Order Confirmation */
+        .confirmation-section {
+            padding: 2rem 0;
+            display: none;
+        }
+
+        .confirmation-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+
+        .confirmation-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .confirmation-message {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .confirm-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--success-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .confirm-link:hover {
+            background-color: #27ae60;
+        }
+
+        .error-section {
+            background-color: #fdeded;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .no-car-selected {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .no-car-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .no-car-message {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+
+        .no-car-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .no-car-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-logo i {
+            font-size: 1.5rem;
+            margin-right: 8px;
+            color: var(--secondary-color);
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .car-detail-header {
+                flex-direction: column;
+            }
+
+            .car-detail-image {
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-btn {
+                width: 100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .footer-logo {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Logo and Navigation -->
+    <header>
+        <div class="container header-container">
+            <div class="logo" id="logo">
+                <i class="fas fa-car"></i>
+                <h1>SpeedyWheels</h1>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" id="reservationBtn">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Reservation</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container search-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for cars by type, brand, model...">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            <div class="filter-container">
+                <div class="filter-group">
+                    <span class="filter-label">Car Type:</span>
+                    <select class="filter-select" id="typeFilter">
+                        <option value="">All Types</option>
+                        <!-- Car types will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Brand:</span>
+                    <select class="filter-select" id="brandFilter">
+                        <option value="">All Brands</option>
+                        <!-- Brands will be populated dynamically -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cars Grid Section -->
+    <section class="cars-section" id="carsSection">
+        <div class="container">
+            <h2 class="section-title">Available Cars</h2>
+            <div class="car-grid" id="carGrid">
+                <!-- Cars will be populated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section class="reservation-section" id="reservationSection">
+        <div class="container">
+            <h2 class="section-title">Car Reservation</h2>
+            
+            <div class="error-section" id="errorSection">
+                <p><strong>Error:</strong> <span id="errorMessage"></span></p>
+            </div>
+            
+            <div class="no-car-selected" id="noCarSelected">
+                <div class="no-car-icon">
+                    <i class="fas fa-car-alt"></i>
+                </div>
+                <h3 class="no-car-message">No car selected for reservation.</h3>
+                <p>Please choose a car from our collection to proceed with the reservation.</p>
+                <button class="no-car-btn" id="browseBtn">Browse Cars</button>
+            </div>
+            
+            <div class="car-detail" id="carDetail">
+                <div class="car-detail-header">
+                    <div class="car-detail-image">
+                    </div>
+                    <div class="car-detail-info">
+                        <h3 class="car-detail-title" id="carDetailTitle"></h3>
+                        <div class="car-detail-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span id="carDetailType"></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="carDetailYear"></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span id="carDetailMileage"></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-gas-pump"></i>
+                                <span id="carDetailFuel"></span>
+                            </div>
+                        </div>
+                        <p class="car-detail-description" id="carDetailDescription"></p>
+                        <p class="car-detail-price">$<span id="carDetailPrice"></span> per day</p>
+                    </div>
+                </div>
+                
+                <div class="car-unavailable-message" id="carUnavailableMessage">
+                    <p><strong>Sorry!</strong> This car is no longer available for rent. Please select another car from our collection.</p>
+                </div>
+                
+                <div class="reservation-form-container" id="reservationForm">
+                    <form id="rentalForm">
+                        <div class="form-group">
+                            <div class="form-row">
+                                <label class="form-label" for="customerName">Full Name</label>
+                                <input type="text" class="form-input" id="customerName" name="customerName">
+                                <span class="error-message" id="customerNameError">Please enter your full name</span>
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label" for="customerPhone">Phone Number</label>
+                                <input type="tel" class="form-input" id="customerPhone" name="customerPhone">
+                                <span class="error-message" id="customerPhoneError">Please enter a valid phone number</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-row">
+                                <label class="form-label" for="customerEmail">Email Address</label>
+                                <input type="email" class="form-input" id="customerEmail" name="customerEmail">
+                                <span class="error-message" id="customerEmailError">Please enter a valid email address</span>
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label" for="customerLicense">Driver's License Number</label>
+                                <input type="text" class="form-input" id="customerLicense" name="customerLicense">
+                                <span class="error-message" id="customerLicenseError">Please enter your driver's license number</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="form-row">
+                                <label class="form-label" for="startDate">Start Date</label>
+                                <input type="date" class="form-input" id="startDate" name="startDate">
+                                <span class="error-message" id="startDateError">Please select a valid start date</span>
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label" for="rentalPeriod">Rental Period (days)</label>
+                                <input type="number" class="form-input" id="rentalPeriod" name="rentalPeriod" min="1" max="30" value="1">
+                                <span class="error-message" id="rentalPeriodError">Please enter a rental period between 1 and 30 days</span>
+                            </div>
+                        </div>
+                        
+                        <div class="price-summary">
+                            <span>Total Price:</span>
+                            <span class="total-price">$<span id="totalPrice">0</span></span>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="form-btn btn-cancel" id="cancelBtn">Cancel</button>
+                            <button type="submit" class="form-btn btn-submit" id="submitBtn" disabled>Submit Reservation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Confirmation Section -->
+    <section class="confirmation-section" id="confirmationSection">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="confirmation-title">Reservation Placed Successfully!</h2>
+                <p class="confirmation-message">
+                    Your rental order has been placed. Please click the confirmation link below to confirm your reservation. 
+                    If you don't confirm, the car will remain reserved for you but the order won't be processed.
+                </p>
+                <a href="#" class="confirm-link" id="confirmLink">Confirm Reservation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-car"></i>
+                <span>SpeedyWheels</span>
+            </div>
+            <p class="footer-text">&copy; 2025 SpeedyWheels Car Rental Services. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script>
+        // Global variables to store data
+        let carsData = [];
+        let ordersData = [];
+        let selectedCar = null;
+        let keywordSuggestions = [];
+
+        // Document ready function
+        $(document).ready(function() {
+            // Load initial data
+            loadCarsData();
+            loadOrdersData();
+
+            // Set up event listeners
+            setupEventListeners();
+
+            // Set minimum date for reservation to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            $('#startDate').attr('min', formattedDate);
+        });
+
+        // Load cars data from JSON file
+        function loadCarsData() {
+            // Normally this would be an AJAX call to a server endpoint
+            // For this example, we'll use mock data
+            carsData = {
+                "cars": [
+                    {
+                        "carType": "Sedan",
+                        "brand": "Toyota",
+                        "carModel": "Corolla",
+                        "imageUrl": "images/toyota.jpg",
+                        "yearOfManufacture": 2014,
+                        "mileage": "30,000 km",
+                        "fuelType": "Gasoline",
+                        "available": true,
+                        "pricePerDay": 50,
+                        "description": "A reliable and fuel-efficient sedan perfect for daily commuting.",
+                        "vin": "1HGBH41JXMN109186"
+                    },
+                    {
+                        "carType": "SUV",
+                        "brand": "Honda",
+                        "carModel": "CR-V",
+                        "imageUrl": "images/honda.jpg",
+                        "yearOfManufacture": 2001,
+                        "mileage": "45,000 km",
+                        "fuelType": "Gasoline",
+                        "available": false,
+                        "pricePerDay": 70,
+                        "description": "Spacious and versatile, great for family trips and outdoor adventures.",
+                        "vin": "2HGFC2F60KH123456"
+                    },
+                    {
+                        "carType": "Coupe",
+                        "brand": "Ford",
+                        "carModel": "Mustang",
+                        "imageUrl": "images/ford.png",
+                        "yearOfManufacture": 2010,
+                        "mileage": "15,000 km",
+                        "fuelType": "Gasoline",
+                        "available": true,
+                        "pricePerDay": 120,
+                        "description": "A powerful and stylish coupe offering an exhilarating driving experience.",
+                        "vin": "1FA6P8TH6J5134567"
+                    },
+                    {
+                        "carType": "Sedan",
+                        "brand": "Honda",
+                        "carModel": "Civic",
+                        "imageUrl": "images/honda.jpg",
+                        "yearOfManufacture": 2020,
+                        "mileage": "10,000 km",
+                        "fuelType": "Hybrid",
+                        "available": true,
+                        "pricePerDay": 65,
+                        "description": "An eco-friendly hybrid vehicle with excellent fuel economy.",
+                        "vin": "2HGES267XMH123456"
+                    },
+                    {
+                        "carType": "SUV",
+                        "brand": "Toyota",
+                        "carModel": "RAV4",
+                        "imageUrl": "images/toyota.jpg",
+                        "yearOfManufacture": 2019,
+                        "mileage": "20,000 km",
+                        "fuelType": "Gasoline",
+                        "available": true,
+                        "pricePerDay": 80,
+                        "description": "A compact SUV with great handling and plenty of cargo space.",
+                        "vin": "JTMWF4DV6A5010919"
+                    },
+                    {
+                        "carType": "Wagon",
+                        "brand": "Subaru",
+                        "carModel": "Outback",
+                        "imageUrl": "images/subaru.png",
+                        "yearOfManufacture": 2018,
+                        "mileage": "35,000 km",
+                        "fuelType": "Gasoline",
+                        "available": true,
+                        "pricePerDay": 75,
+                        "description": "All-wheel drive wagon perfect for outdoor adventures and rough terrain.",
+                        "vin": "4S4BSANC2J3123456"
+                    },
+                    {
+                        "carType": "Luxury",
+                        "brand": "BMW",
+                        "carModel": "5 Series",
+                        "imageUrl": "images/bmw.jpg",
+                        "yearOfManufacture": 2021,
+                        "mileage": "5,000 km",
+                        "fuelType": "Gasoline",
+                        "available": true,
+                        "pricePerDay": 150,
+                        "description": "A luxury sedan offering premium comfort, advanced technology, and refined driving dynamics.",
+                        "vin": "WBA5R7C5XKGE87654"
+                    }
+                ]
+            };
+
+            // Generate keyword suggestions from car data
+            generateKeywordSuggestions();
+            
+            // Populate car grid
+            displayCars(carsData.cars);
+            
+            // Populate filter options
+            populateFilterOptions();
+        }
+
+        // Load orders data from JSON file
+        function loadOrdersData() {
+            // Normally this would be an AJAX call to a server endpoint
+            // For this example, we'll use mock data
+            ordersData = {
+                "orders": [
+                    {
+                        "customer": {
+                            "name": "John Doe",
+                            "phoneNumber": "+1234567890",
+                            "email": "johndoe@example.com",
+                            "driversLicenseNumber": "D123456789"
+                        },
+                        "car": {
+                            "vin": "1HGBH41JXMN109186"
+                        },
+                        "rental": {
+                            "startDate": "2025-04-01",
+                            "rentalPeriod": 7,
+                            "totalPrice": 350,
+                            "orderDate": "2025-03-28"
+                        }
+                    },
+                    {
+                        "customer": {
+                            "name": "Jane Smith",
+                            "phoneNumber": "+0987654321",
+                            "email": "janesmith@example.com",
+                            "driversLicenseNumber": "D987654321"
+                        },
+                        "car": {
+                            "vin": "2HGFC2F60KH123456"
+                        },
+                        "rental": {
+                            "startDate": "2025-04-05",
+                            "rentalPeriod": 5,
+                            "totalPrice": 250,
+                            "orderDate": "2025-03-29"
+                        }
+                    },
+                    {
+                        "customer": {
+                            "name": "Alice Johnson",
+                            "phoneNumber": "+1122334455",
+                            "email": "alicejohnson@example.com",
+                            "driversLicenseNumber": "D112233445"
+                        },
+                        "car": {
+                            "vin": "1FA6P8TH6J5134567"
+                        },
+                        "rental": {
+                            "startDate": "2025-04-10",
+                            "rentalPeriod": 10,
+                            "totalPrice": 500,
+                            "orderDate": "2025-03-30"
+                        }
+                    }
+                ]
+            };
+
+            // Update car availability based on orders
+            updateCarAvailability();
+        }
+
+        // Generate keyword suggestions from car data
+        function generateKeywordSuggestions() {
+            keywordSuggestions = [];
+            
+            // Add car types
+            const carTypes = [...new Set(carsData.cars.map(car => car.carType))];
+            keywordSuggestions.push(...carTypes);
+            
+            // Add brands
+            const brands = [...new Set(carsData.cars.map(car => car.brand))];
+            keywordSuggestions.push(...brands);
+            
+            // Add models
+            const models = [...new Set(carsData.cars.map(car => car.carModel))];
+            keywordSuggestions.push(...models);
+            
+            // Add fuel types
+            const fuelTypes = [...new Set(carsData.cars.map(car => car.fuelType))];
+            keywordSuggestions.push(...fuelTypes);
+            
+            // Add some extracted keywords from descriptions
+            const descriptionKeywords = ['reliable', 'efficient', 'spacious', 'family', 'eco-friendly', 'premium', 'luxury'];
+            keywordSuggestions.push(...descriptionKeywords);
+            
+            // Remove duplicates and sort
+            keywordSuggestions = [...new Set(keywordSuggestions)].sort();
+        }
+
+        // Update car availability based on orders
+        function updateCarAvailability() {
+            // In a real application, this would check order dates against today
+            // For this demo, we'll just use the static availability value
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Logo click - back to homepage
+            $('#logo').click(function() {
+                showHomePage();
+            });
+            
+            // Reservation button click
+            $('#reservationBtn').click(function() {
+                showReservationPage();
+            });
+            
+            // Search input keyup - show suggestions
+            $('#searchInput').on('input', function() {
+                const searchTerm = $(this).val().trim().toLowerCase();
+                if (searchTerm.length > 0) {
+                    showSearchSuggestions(searchTerm);
+                } else {
+                    hideSearchSuggestions();
+                }
+            });
+            
+            // Search button click
+            $('#searchBtn').click(function() {
+                const searchTerm = $('#searchInput').val().trim().toLowerCase();
+                searchCars(searchTerm);
+            });
+            
+            // Search input enter key
+            $('#searchInput').keypress(function(e) {
+                if (e.which === 13) {
+                    const searchTerm = $(this).val().trim().toLowerCase();
+                    searchCars(searchTerm);
+                    hideSearchSuggestions();
+                }
+            });
+            
+            // Filter changes
+            $('#typeFilter, #brandFilter').change(function() {
+                filterCars();
+            });
+            
+            // Browse cars button click
+            $('#browseBtn').click(function() {
+                showHomePage();
+            });
+            
+            // Cancel reservation button click
+            $('#cancelBtn').click(function() {
+                clearReservationForm();
+                showHomePage();
+            });
+            
+            // Form validation on input
+            $('#rentalForm input').on('input', function() {
+                validateFormField($(this));
+                updateTotalPrice();
+                checkFormValidity();
+            });
+            
+            // Submit reservation form
+            $('#rentalForm').submit(function(e) {
+                e.preventDefault();
+                if (validateForm()) {
+                    submitReservation();
+                }
+            });
+            
+            // Confirm reservation link click
+            $('#confirmLink').click(function(e) {
+                e.preventDefault();
+                confirmReservation();
+            });
+            
+            // Document click to hide suggestions
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.search-bar').length) {
+                    hideSearchSuggestions();
+                }
+            });
+        }
+
+        // Show search suggestions based on input
+        function showSearchSuggestions(searchTerm) {
+            const $suggestions = $('#searchSuggestions');
+            $suggestions.empty();
+            
+            // Filter suggestions based on search term
+            const filteredSuggestions = keywordSuggestions.filter(keyword => 
+                keyword.toLowerCase().includes(searchTerm)
+            );
+            
+            // Only show top 5 suggestions
+            const limitedSuggestions = filteredSuggestions.slice(0, 5);
+            
+            if (limitedSuggestions.length > 0) {
+                limitedSuggestions.forEach(suggestion => {
+                    $suggestions.append(`
+                        <div class="suggestion-item" data-suggestion="${suggestion}">${suggestion}</div>
+                    `);
+                });
+                
+                // Add click event to suggestions
+                $('.suggestion-item').click(function() {
+                    const suggestion = $(this).data('suggestion');
+                    $('#searchInput').val(suggestion);
+                    hideSearchSuggestions();
+                    searchCars(suggestion);
+                });
+                
+                $suggestions.show();
+            } else {
+                hideSearchSuggestions();
+            }
+        }
+
+        // Hide search suggestions
+        function hideSearchSuggestions() {
+            $('#searchSuggestions').hide();
+        }
+
+        // Populate filter options
+        function populateFilterOptions() {
+            // Get unique car types and brands
+            const carTypes = [...new Set(carsData.cars.map(car => car.carType))];
+            const brands = [...new Set(carsData.cars.map(car => car.brand))];
+            
+            // Populate car type filter
+            const $typeFilter = $('#typeFilter');
+            carTypes.forEach(type => {
+                $typeFilter.append(`<option value="${type}">${type}</option>`);
+            });
+            
+            // Populate brand filter
+            const $brandFilter = $('#brandFilter');
+            brands.forEach(brand => {
+                $brandFilter.append(`<option value="${brand}">${brand}</option>`);
+            });
+        }
+
+        // Display cars in grid
+        function displayCars(cars) {
+            const $carGrid = $('#carGrid');
+            $carGrid.empty();
+            
+            if (cars.length === 0) {
+                $carGrid.html('<p>No cars found matching your criteria.</p>');
+                return;
+            }
+            
+            cars.forEach(car => {
+                const isAvailable = car.available;
+                const availabilityClass = isAvailable ? 'available' : 'unavailable';
+                const availabilityText = isAvailable ? 'Available' : 'Not Available';
+                
+                $carGrid.append(`
+                    <div class="car-card">
+                        <div class="car-image">
+                    </div>
+                    <div class="car-image">
++          <img src="${car.imageUrl}"
++               alt="${car.carType} – ${car.brand} ${car.carModel}"
++               style="width:100%;height:100%;object-fit:cover;" />
++        </div>
+                        <div class="car-details">
+                            <h3 class="car-title">${car.brand} ${car.carModel}</h3>
+                            <p class="car-info">${car.carType} • ${car.yearOfManufacture} • ${car.fuelType}</p>
+                            <p class="car-price">${car.pricePerDay} / day</p>
+                            <div class="car-availability ${availabilityClass}">
+                                <i class="fas fa-${isAvailable ? 'check-circle' : 'times-circle'}"></i>
+                                <span>${availabilityText}</span>
+                            </div>
+                            <button class="car-btn" ${!isAvailable ? 'disabled' : ''} data-vin="${car.vin}">
+                                ${isAvailable ? 'Rent Now' : 'Not Available'}
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+            
+            // Add click event to rent buttons
+            $('.car-btn:not([disabled])').click(function() {
+                const vin = $(this).data('vin');
+                selectCar(vin);
+            });
+        }
+
+        // Search cars based on keyword
+        function searchCars(keyword) {
+            if (!keyword) {
+                displayCars(carsData.cars);
+                return;
+            }
+            
+            const searchTerm = keyword.toLowerCase();
+            const filteredCars = carsData.cars.filter(car => 
+                car.carType.toLowerCase().includes(searchTerm) ||
+                car.brand.toLowerCase().includes(searchTerm) ||
+                car.carModel.toLowerCase().includes(searchTerm) ||
+                car.fuelType.toLowerCase().includes(searchTerm) ||
+                car.description.toLowerCase().includes(searchTerm)
+            );
+            
+            displayCars(filteredCars);
+        }
+
+        // Filter cars based on selected options
+        function filterCars() {
+            const selectedType = $('#typeFilter').val();
+            const selectedBrand = $('#brandFilter').val();
+            const searchTerm = $('#searchInput').val().trim().toLowerCase();
+            
+            let filteredCars = carsData.cars;
+            
+            // Filter by type if selected
+            if (selectedType) {
+                filteredCars = filteredCars.filter(car => car.carType === selectedType);
+            }
+            
+            // Filter by brand if selected
+            if (selectedBrand) {
+                filteredCars = filteredCars.filter(car => car.brand === selectedBrand);
+            }
+            
+            // Filter by search term if entered
+            if (searchTerm) {
+                filteredCars = filteredCars.filter(car => 
+                    car.carType.toLowerCase().includes(searchTerm) ||
+                    car.brand.toLowerCase().includes(searchTerm) ||
+                    car.carModel.toLowerCase().includes(searchTerm) ||
+                    car.fuelType.toLowerCase().includes(searchTerm) ||
+                    car.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayCars(filteredCars);
+        }
+
+        // Select a car for reservation
+        function selectCar(vin) {
+            const car = carsData.cars.find(car => car.vin === vin);
+            if (car) {
+                selectedCar = car;
+                localStorage.setItem('selectedCarVIN', vin);
+                showReservationPage();
+            }
+        }
+
+        // Show home page
+        function showHomePage() {
+            $('#carsSection').show();
+            $('#reservationSection').hide();
+            $('#confirmationSection').hide();
+        }
+
+        // Show reservation page
+        function showReservationPage() {
+            $('#carsSection').hide();
+            $('#reservationSection').show();
+            $('#confirmationSection').hide();
+            
+            // Try to load the car from localStorage
+            const storedVIN = localStorage.getItem('selectedCarVIN');
+            if (storedVIN && !selectedCar) {
+                const car = carsData.cars.find(car => car.vin === storedVIN);
+                if (car) {
+                    selectedCar = car;
+                }
+            }
+            
+            if (selectedCar) {
+                // inject the image ---------------------------------
+   const $imgBox = $('#carDetail .car-detail-image').empty();
+   $('<img>')
+     .attr('src', selectedCar.imageUrl)
+     .attr('alt', `${selectedCar.carType} – ${selectedCar.brand} ${selectedCar.carModel}`)
+     .css({ width: '100%', height: '100%', objectFit: 'cover' })
+     .appendTo($imgBox);
+
+                // Show car details
+                $('#carDetail').show();
+                $('#noCarSelected').hide();
+                
+                // Populate car details
+                $('#carDetailTitle').text(`${selectedCar.brand} ${selectedCar.carModel}`);
+                $('#carDetailType').text(`${selectedCar.carType}`);
+                $('#carDetailYear').text(`Year: ${selectedCar.yearOfManufacture}`);
+                $('#carDetailMileage').text(`Mileage: ${selectedCar.mileage}`);
+                $('#carDetailFuel').text(`Fuel: ${selectedCar.fuelType}`);
+                $('#carDetailDescription').text(selectedCar.description);
+                $('#carDetailPrice').text(selectedCar.pricePerDay);
+                //$('#carDetailIcon').attr('class', `fas fa-${selectedCar.image}`);
+                
+                // Check if the car is still available
+                if (selectedCar.available) {
+                    $('#carUnavailableMessage').hide();
+                    $('#reservationForm').show();
+                    
+                    // Load saved form data if available
+                    loadFormData();
+                    
+                    // Update total price based on current values
+                    updateTotalPrice();
+                } else {
+                    $('#carUnavailableMessage').show();
+                    $('#reservationForm').hide();
+                }
+            } else {
+                // No car selected, show message
+                $('#carDetail').hide();
+                $('#noCarSelected').show();
+            }
+        }
+
+        // Load saved form data from localStorage
+        function loadFormData() {
+            const formData = JSON.parse(localStorage.getItem('reservationFormData')) || {};
+            $('#customerName').val(formData.name || '');
+            $('#customerPhone').val(formData.phone || '');
+            $('#customerEmail').val(formData.email || '');
+            $('#customerLicense').val(formData.license || '');
+            $('#startDate').val(formData.startDate || '');
+            $('#rentalPeriod').val(formData.rentalPeriod || 1);
+            
+            // Validate fields
+            $('#rentalForm input').each(function() {
+                validateFormField($(this));
+            });
+            
+            // Check if form is valid
+            checkFormValidity();
+        }
+
+        // Save form data to localStorage
+        function saveFormData() {
+            const formData = {
+                name: $('#customerName').val(),
+                phone: $('#customerPhone').val(),
+                email: $('#customerEmail').val(),
+                license: $('#customerLicense').val(),
+                startDate: $('#startDate').val(),
+                rentalPeriod: $('#rentalPeriod').val()
+            };
+            localStorage.setItem('reservationFormData', JSON.stringify(formData));
+        }
+
+        // Clear reservation form
+        function clearReservationForm() {
+            $('#rentalForm')[0].reset();
+            localStorage.removeItem('reservationFormData');
+            $('#submitBtn').prop('disabled', true);
+            
+            // Reset error states
+            $('.form-input').removeClass('error');
+            $('.error-message').hide();
+        }
+
+        // Validate a form field
+        function validateFormField($field) {
+            const id = $field.attr('id');
+            const value = $field.val().trim();
+            let isValid = true;
+            
+            // Reset error state
+            $field.removeClass('error');
+            $(`#${id}Error`).hide();
+            
+            // Validate based on field ID
+            switch (id) {
+                case 'customerName':
+                    if (!value) {
+                        showFieldError($field, 'Please enter your full name');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 'customerPhone':
+                    // Simple phone validation
+                    if (!value || !/^[+]?[\d\s()-]{7,}$/.test(value)) {
+                        showFieldError($field, 'Please enter a valid phone number');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 'customerEmail':
+                    // Simple email validation
+                    if (!value || !/^[\w.-]+@[\w.-]+\.\w+$/.test(value)) {
+                        showFieldError($field, 'Please enter a valid email address');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 'customerLicense':
+                    if (!value) {
+                        showFieldError($field, 'Please enter your driver\'s license number');
+                        isValid = false;
+                    }
+                    break;
+                    
+                case 'startDate':
+                    if (!value) {
+                        showFieldError($field, 'Please select a start date');
+                        isValid = false;
+                    } else {
+                        const selectedDate = new Date(value);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        if (selectedDate < today) {
+                            showFieldError($field, 'Start date cannot be in the past');
+                            isValid = false;
+                        }
+                    }
+                    break;
+                    
+                case 'rentalPeriod':
+                    const period = parseInt(value);
+                    if (isNaN(period) || period < 1 || period > 30) {
+                        showFieldError($field, 'Rental period must be between 1 and 30 days');
+                        isValid = false;
+                    }
+                    break;
+            }
+            
+            return isValid;
+        }
+
+        // Show field error
+        function showFieldError($field, message) {
+            const id = $field.attr('id');
+            $field.addClass('error');
+            $(`#${id}Error`).text(message).show();
+        }
+
+        // Check if the entire form is valid
+        function checkFormValidity() {
+            let isValid = true;
+            
+            // Check all fields
+            $('#rentalForm input').each(function() {
+                if (!validateFormField($(this))) {
+                    isValid = false;
+                }
+            });
+            
+            // Enable/disable submit button
+            $('#submitBtn').prop('disabled', !isValid);
+            
+            return isValid;
+        }
+
+        // Validate the entire form
+        function validateForm() {
+            return checkFormValidity();
+        }
+
+        // Update total price based on rental period
+        function updateTotalPrice() {
+            if (selectedCar) {
+                const rentalPeriod = parseInt($('#rentalPeriod').val()) || 0;
+                const totalPrice = selectedCar.pricePerDay * rentalPeriod;
+                $('#totalPrice').text(totalPrice);
+            }
+        }
+
+        // Submit reservation
+        function submitReservation() {
+            // Save form data
+            saveFormData();
+            
+            // Check if car is still available
+            const currentCar = carsData.cars.find(car => car.vin === selectedCar.vin);
+            if (!currentCar || !currentCar.available) {
+                // Car is no longer available
+                $('#errorSection').show();
+                $('#errorMessage').text('This car is no longer available for rent. Please select another car.');
+                selectedCar.available = false;
+                return;
+            }
+            
+            // Create new order
+            const newOrder = {
+                customer: {
+                    name: $('#customerName').val(),
+                    phoneNumber: $('#customerPhone').val(),
+                    email: $('#customerEmail').val(),
+                    driversLicenseNumber: $('#customerLicense').val()
+                },
+                car: {
+                    vin: selectedCar.vin
+                },
+                rental: {
+                    startDate: $('#startDate').val(),
+                    rentalPeriod: parseInt($('#rentalPeriod').val()),
+                    totalPrice: parseInt($('#totalPrice').text()),
+                    orderDate: new Date().toISOString().split('T')[0]
+                }
+            };
+            
+            // Add order to orders data
+            ordersData.orders.push(newOrder);
+            
+            // Mark car as unavailable
+            const carIndex = carsData.cars.findIndex(car => car.vin === selectedCar.vin);
+            if (carIndex !== -1) {
+                carsData.cars[carIndex].available = false;
+            }
+            
+            // Show confirmation section
+            showConfirmationSection();
+        }
+
+        // Show confirmation section
+        function showConfirmationSection() {
+            $('#carsSection').hide();
+            $('#reservationSection').hide();
+            $('#confirmationSection').show();
+        }
+
+        // Confirm reservation
+        function confirmReservation() {
+            // In a real app, this would send a confirmation request to the server
+            
+            // Clear form data
+            clearReservationForm();
+            localStorage.removeItem('selectedCarVIN');
+            selectedCar = null;
+            
+            // Go back to home page
+            showHomePage();
+        }
+    </script>
+</body>
+</html>
