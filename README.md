@@ -4,6 +4,8 @@ A simple interactive car rental single-page web application that lets users brow
 
 ---
 
+http://assignment2-env.eba-r6itzbhs.us-east-1.elasticbeanstalk.com/
+
 ## Features
 
 - **Interactive Car Catalogue:**  
